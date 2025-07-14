@@ -98,7 +98,8 @@ class VisPRM(PRMBase):
         
         """
         # 0. reset
-        self.graph.clear()
+        if config["reset_graph"]:
+            self.graph.clear()
         
         # 1. check start and goal whether collision free (s. BaseClass)
         checkedStartList, checkedGoalList = self._checkStartGoal(startList,goalList)
