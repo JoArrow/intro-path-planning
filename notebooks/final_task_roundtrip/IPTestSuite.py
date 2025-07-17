@@ -13,8 +13,12 @@ import shapely.affinity
 import math
 import numpy as np
 
+from IPPlanarManipulator import PlanarJoint, PlanarRobot
+from IPEnvironmentKin import planarRobotVisualize
+from IPEnvironmentKin import KinChainCollisionChecker
 
 benchList = list()
+
 
 # -----------------------------------------
 trapField = dict()
@@ -52,3 +56,17 @@ myField["Antenna_Head_R"] = Point(8.5, 16).buffer(1)
 myField["Rob_Head"] = Polygon([(2, 13), (2, 8), (8, 8), (8, 13)])
 description = "Planer has to find a passage past a robot head and the print of the LTC."
 benchList.append(Benchmark("MyField", CollisionChecker(myField), [[4,21]], [[18,1]], description, 2))
+
+# 2-DoF planar robot
+# -----------------------------------------
+obst = dict()
+obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
+obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
+obst["obs3"] = LineString([(-1, 2), (1, 2)]).buffer(0.1)
+
+# create environment with robot and obstacle
+r = PlanarRobot(n_joints=2)
+environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
+description = "Planar robot with two joints and obstacles."
+
+benchList.append(Benchmark("2-DoF planar Robot - 3 Obstacles", environment, [[2.0, 0.5]], [[-2.0, -0.5]], description, 1)) # TODO: add to planarRobotBenchlist instead?

@@ -95,6 +95,7 @@ class VisPRM(PRMBase):
         Example:
         
             config["ntry"] = 40 
+            config["reset_graph"] = True
         
         """
         # 0. reset
