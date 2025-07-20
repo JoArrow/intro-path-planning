@@ -24,21 +24,21 @@ benchList = list()
 trapField = dict()
 trapField["obs1"] =   LineString([(6, 18), (6, 8), (16, 8), (16,18)]).buffer(1.0)
 description = "Following the direct connection from goal to start would lead the algorithm into a trap."
-benchList.append(Benchmark("Trap", CollisionChecker(trapField), [[10,15]], [[10,1]], description, 2))
+benchList.append(Benchmark("Trap", CollisionChecker(trapField), [[10,15]], [[1,1], [10,1]], description, 2))
 
 # -----------------------------------------
 bottleNeckField = dict()
 bottleNeckField["obs1"] = LineString([(0, 13), (11, 13)]).buffer(.5)
 bottleNeckField["obs2"] = LineString([(13, 13), (23,13)]).buffer(.5)
 description = "Planer has to find a narrow passage."
-benchList.append(Benchmark("Bottleneck", CollisionChecker(bottleNeckField), [[4,15]], [[18,1]], description, 2))
+benchList.append(Benchmark("Bottleneck", CollisionChecker(bottleNeckField), [[4,15]], [[1,1], [18,1]], description, 2))
 
 # -----------------------------------------
 fatBottleNeckField = dict()
 fatBottleNeckField["obs1"] = Polygon([(0, 8), (11, 8),(11, 15), (0, 15)]).buffer(.5)
 fatBottleNeckField["obs2"] = Polygon([(13, 8), (24, 8),(24, 15), (13, 15)]).buffer(.5)
 description = "Planer has to find a narrow passage with a significant extend."
-benchList.append(Benchmark("Fat bottleneck", CollisionChecker(fatBottleNeckField), [[4,21]], [[18,1]], description, 2))
+benchList.append(Benchmark("Fat bottleneck", CollisionChecker(fatBottleNeckField), [[4,21]], [[1,1], [18,1]], description, 2))
 
 # -----------------------------------------
 
@@ -55,10 +55,11 @@ myField["Antenna_Head_R"] = Point(8.5, 16).buffer(1)
 
 myField["Rob_Head"] = Polygon([(2, 13), (2, 8), (8, 8), (8, 13)])
 description = "Planer has to find a passage past a robot head and the print of the LTC."
-benchList.append(Benchmark("MyField", CollisionChecker(myField), [[4,21]], [[18,1]], description, 2))
+benchList.append(Benchmark("MyField", CollisionChecker(myField), [[4,21]], [[1,1], [18,1]], description, 2))
 
 # 2-DoF planar robot
 # -----------------------------------------
+
 obst = dict()
 obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
 obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
@@ -69,4 +70,4 @@ r = PlanarRobot(n_joints=2)
 environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
 description = "Planar robot with two joints and obstacles."
 
-benchList.append(Benchmark("2-DoF planar Robot - 3 Obstacles", environment, [[2.0, 0.5]], [[-2.0, -0.5]], description, 1)) # TODO: add to planarRobotBenchlist instead?
+benchList.append(Benchmark("2-DoF planar Robot - 3 Obstacles", environment, [[2.0, 0.5]], [[-2.0,-0.4], [-2.0, -0.5]], description, 1)) # TODO: add to planarRobotBenchlist instead?
