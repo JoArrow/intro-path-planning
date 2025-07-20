@@ -83,6 +83,30 @@ class VisPRM(PRMBase):
 
             nodeNumber += 1
 
+    def _find_path_in_roadmap(self, checkedStartList, checkedGoalList):
+        # find nearest, collision-free connection between node on graph and start
+        posList = nx.get_node_attributes(self.graph,'pos')
+        kdTree = cKDTree(list(posList.values()))
+        
+        result = kdTree.query(checkedStartList[0],k=5)
+        for node in result[1]:
+            if not self._collisionChecker.lineInCollision(checkedStartList[0],self.graph.nodes()[list(posList.keys())[node]]['pos']):
+                 self.graph.add_node("start", pos=checkedStartList[0], color='lightgreen')
+                 self.graph.add_edge("start", list(posList.keys())[node])
+                 break
+
+        result = kdTree.query(checkedGoalList[0],k=5)
+        for node in result[1]:
+            if not self._collisionChecker.lineInCollision(checkedGoalList[0],self.graph.nodes()[list(posList.keys())[node]]['pos']):
+                 self.graph.add_node("goal", pos=checkedGoalList[0], color='lightgreen')
+                 self.graph.add_edge("goal", list(posList.keys())[node])
+                 break
+
+        try:
+            return nx.shortest_path(self.graph,"start","goal")
+        except:
+            return []
+
     @IPPerfMonitor
     def planPath(self, startList, goalList, config):
         """
@@ -106,30 +130,11 @@ class VisPRM(PRMBase):
         checkedStartList, checkedGoalList = self._checkStartGoal(startList,goalList)
         
         # 2. learn Roadmap
-        self._learnRoadmap(config["ntry"])
+        if self.graph.number_of_nodes() == 0:
+            self._learnRoadmap(config["ntry"])
 
         # 3. find connection of start and goal to roadmap
-        # find nearest, collision-free connection between node on graph and start
-        posList = nx.get_node_attributes(self.graph,'pos')
-        kdTree = cKDTree(list(posList.values()))
-        
-        result = kdTree.query(checkedStartList[0],k=5)
-        for node in result[1]:
-            if not self._collisionChecker.lineInCollision(checkedStartList[0],self.graph.nodes()[list(posList.keys())[node]]['pos']):
-                 self.graph.add_node("start", pos=checkedStartList[0], color='lightgreen')
-                 self.graph.add_edge("start", list(posList.keys())[node])
-                 break
+        return self._find_path_in_roadmap(checkedStartList, checkedGoalList)
 
-        result = kdTree.query(checkedGoalList[0],k=5)
-        for node in result[1]:
-            if not self._collisionChecker.lineInCollision(checkedGoalList[0],self.graph.nodes()[list(posList.keys())[node]]['pos']):
-                 self.graph.add_node("goal", pos=checkedGoalList[0], color='lightgreen')
-                 self.graph.add_edge("goal", list(posList.keys())[node])
-                 break
 
-        try:
-            path = nx.shortest_path(self.graph,"start","goal")
-        except:
-            return []
-        return path
         
