@@ -39,6 +39,7 @@ def lazyPRMVisualize(planner, solution = [] , ax=None, nodeSize = 300):
                                edge_color='b',
                                width=3.0, style='dashed',
                                alpha=0.5,
+                               ax=ax
                             )
     if collEdges != []:
         collGraph = nx.Graph()
@@ -47,7 +48,7 @@ def lazyPRMVisualize(planner, solution = [] , ax=None, nodeSize = 300):
         #collGraph
         for i in collEdges:
             collGraph.add_edge(i[0],i[1])
-        nx.draw_networkx_edges(collGraph,pos,alpha=0.2,edge_color='r',width=5)
+        nx.draw_networkx_edges(collGraph,pos,alpha=0.2,edge_color='r',width=5, ax=ax)
 
 
     
@@ -58,7 +59,7 @@ def lazyPRMVisualize(planner, solution = [] , ax=None, nodeSize = 300):
         #collGraph
         for i in nonCollEdges:
             nonCollGraph.add_edge(i[0],i[1])
-        nx.draw_networkx_edges(nonCollGraph,pos,alpha=0.8,edge_color='yellow',width=5)
+        nx.draw_networkx_edges(nonCollGraph,pos,alpha=0.8,edge_color='yellow',width=5, ax=ax)
     
 
 
@@ -82,7 +83,7 @@ def lazyPRMVisualize(planner, solution = [] , ax=None, nodeSize = 300):
         # draw nodes based on solution path
         Gsp = nx.subgraph(graph,solution)
         # draw edges based on solution path
-        nx.draw_networkx_edges(Gsp,pos,alpha=0.8,edge_color='g',width=10)
+        nx.draw_networkx_edges(Gsp,pos,alpha=0.8,edge_color='g',width=10, ax=ax)
     
 
     

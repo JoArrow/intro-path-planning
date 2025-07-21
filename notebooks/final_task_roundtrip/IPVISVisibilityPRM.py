@@ -21,8 +21,8 @@ def visibilityPRMVisualize(planner, solution, ax = None, nodeSize = 300):
     
     if statsHandler:
         statPos = nx.get_node_attributes(statsHandler.graph,'pos')
-        nx.draw_networkx_nodes(statsHandler.graph, pos=statPos, alpha=0.2,node_size=nodeSize)
-        nx.draw_networkx_edges(statsHandler.graph, pos=statPos, alpha=0.2,edge_color='y')
+        nx.draw_networkx_nodes(statsHandler.graph, pos=statPos, alpha=0.2,node_size=nodeSize, ax=ax)
+        nx.draw_networkx_edges(statsHandler.graph, pos=statPos, alpha=0.2,edge_color='y', ax=ax)
         
     # draw graph 
     nx.draw_networkx_nodes(graph, pos, ax = ax, nodelist=list(color.keys()), node_color=list(color.values()), node_size=nodeSize)
@@ -41,7 +41,7 @@ def visibilityPRMVisualize(planner, solution, ax = None, nodeSize = 300):
     Gsp = nx.subgraph(graph,solution)
 
     # draw edges based on solution path
-    nx.draw_networkx_edges(Gsp,pos,alpha=0.8,edge_color='g',width=5.0, label="Solution Path")
+    nx.draw_networkx_edges(Gsp,pos,alpha=0.8,edge_color='g',width=5.0, label="Solution Path", ax=ax)
         
     # draw start and goal
     # draw start and goal
