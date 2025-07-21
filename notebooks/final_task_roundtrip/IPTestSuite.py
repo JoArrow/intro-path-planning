@@ -57,17 +57,55 @@ myField["Rob_Head"] = Polygon([(2, 13), (2, 8), (8, 8), (8, 13)])
 description = "Planer has to find a passage past a robot head and the print of the LTC."
 benchList.append(Benchmark("MyField", CollisionChecker(myField), [[4,21]], [[1,1], [18,1]], description, 2))
 
+
 # 2-DoF planar robot
 # -----------------------------------------
+obst = dict()
+obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
+r = PlanarRobot(n_joints=2)
+environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
+description = "Planar robot with two joints and 1 obstacle."
+benchList.append(Benchmark("2-DoF planar Robot - 1 Obstacles", environment, [[2.0, 1.5]], [[-2.0,-1.5]], description, 1))
 
 obst = dict()
 obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
 obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
-obst["obs3"] = LineString([(-1, 2), (1, 2)]).buffer(0.1)
-
-# create environment with robot and obstacle
 r = PlanarRobot(n_joints=2)
 environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
-description = "Planar robot with two joints and obstacles."
+description = "Planar robot with two joints and 2 obstacles."
+benchList.append(Benchmark("2-DoF planar Robot - 2 Obstacles", environment, [[2.0, 1.5]], [[-2.0,-1.5], [0.8, -0.5], [-0.3, 0.5]], description, 2))
 
-benchList.append(Benchmark("2-DoF planar Robot - 3 Obstacles", environment, [[2.0, 0.5]], [[-2.0,-0.4], [-2.0, -0.5]], description, 1)) # TODO: add to planarRobotBenchlist instead?
+obst = dict()
+obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
+obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
+obst["obs3"] = LineString([(-0.5, -2.0), (-0.5, -2.5)]).buffer(0.1)
+obst["obs4"] = LineString([(0.5, -2.0), (0.5, -2.5)]).buffer(0.1)
+r = PlanarRobot(n_joints=2)
+environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
+description = "Planar robot with two joints and 4 obstacles."
+benchList.append(Benchmark("2-DoF planar Robot - 4 Obstacles", environment, [[2.0, 1.5]], [[-2.3,-1.2], [0.8, -0.5], [-0.3, 0.5], [-1.5, 0.0]], description, 2))
+
+
+# 3-DoF planar robot
+# -----------------------------------------
+#obst = dict()
+#obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
+#obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
+#obst["obs3"] = LineString([(-1, 2), (1, 2)]).buffer(0.1)
+#limits = [[-3.14,3.14],[-3.14,3.14],[-3.14,3.14]]
+#r = PlanarRobot(n_joints=3)
+#environment = KinChainCollisionChecker(r, obst, limits=limits, fk_resolution=.2)
+#description = "Planar robot with three joints and obstacles."
+#benchList.append(Benchmark("3-DoF planar Robot - 3 Obstacles", environment, [[2.0, 0.5, 0.0]], [[-2.0,-0.4, 0.0], [-2.0, -0.5, 0.0]], description, 1))
+
+# 4-DoF planar robot
+# -----------------------------------------
+#obst = dict()
+#obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
+#obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
+#obst["obs3"] = LineString([(-1, 2), (1, 2)]).buffer(0.1)
+#limits = [[-3.14,3.14],[-3.14,3.14],[-3.14,3.14],[-3.14,3.14]]
+#r = PlanarRobot(n_joints=4)
+#environment = KinChainCollisionChecker(r, obst, limits=limits, fk_resolution=.2)
+#description = "Planar robot with four joints and obstacles."
+#benchList.append(Benchmark("4-DoF planar Robot - 3 Obstacles", environment, [[2.0, 0.5, 0.0, 0.0]], [[-2.0,-0.4, 0.0, 0.0], [-2.0, -0.5, 0.0, 0.0]], description, 1))
