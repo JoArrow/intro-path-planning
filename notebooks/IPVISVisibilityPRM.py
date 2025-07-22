@@ -21,8 +21,8 @@ def visibilityPRMVisualize(planner, solution, ax = None, nodeSize = 300):
     
     if statsHandler:
         statPos = nx.get_node_attributes(statsHandler.graph,'pos')
-        nx.draw_networkx_nodes(statsHandler.graph, pos=statPos, alpha=0.2,node_size=nodeSize)
-        nx.draw_networkx_edges(statsHandler.graph, pos=statPos, alpha=0.2,edge_color='y')
+        nx.draw_networkx_nodes(statsHandler.graph, pos=statPos, alpha=0.2,node_size=nodeSize, ax=ax)
+        nx.draw_networkx_edges(statsHandler.graph, pos=statPos, alpha=0.2,edge_color='y', ax=ax)
         
     # draw graph 
     nx.draw_networkx_nodes(graph, pos, ax = ax, nodelist=list(color.keys()), node_color=list(color.values()), node_size=nodeSize)
@@ -34,7 +34,8 @@ def visibilityPRMVisualize(planner, solution, ax = None, nodeSize = 300):
     # how largest connected component
     nx.draw_networkx_edges(G0,pos,
                                edge_color='b',
-                               width=2.0, ax = ax
+                               width=2.0, 
+                               ax = ax
                             )
     
     # get nodes based on solution path
