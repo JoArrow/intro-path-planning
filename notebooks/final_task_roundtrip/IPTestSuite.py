@@ -20,6 +20,7 @@ from IPEnvironmentKin import KinChainCollisionChecker
 benchList = list()
 
 
+"""
 # -----------------------------------------
 trapField = dict()
 trapField["obs1"] =   LineString([(6, 18), (6, 8), (16, 8), (16,18)]).buffer(1.0)
@@ -57,6 +58,83 @@ myField["Rob_Head"] = Polygon([(2, 13), (2, 8), (8, 8), (8, 13)])
 description = "Planer has to find a passage past a robot head and the print of the LTC."
 benchList.append(Benchmark("MyField", CollisionChecker(myField), [[4,21]], [[1,1], [18,1]], description, 2))
 
+"""
+# -----------------------------------------
+# Traveling Salesman Problem (TSP) Benchmarks
+# -----------------------------------------
+
+
+cross = dict()
+offset = 5
+cross["vertical"] = LineString([(15, 5), (15, 25)]).buffer(1)
+cross["horizontal"] = LineString([(5, 15), (25, 15)]).buffer(1)
+description = "Simple cross shape with 4 goals."
+benchList.append(Benchmark(
+    name="Plus Sign", 
+    collisionChecker=CollisionChecker(cross), 
+    goalList=[[10, 20], [20, 20], [20, 10]], 
+    startList=[[10, 10]], 
+    description=description, 
+    level=1))
+
+
+
+# Grid of squares
+square_grid = dict()
+scale = 4
+offset = 0.5
+for x in range(8):
+    for y in range(8):
+        # Each square is a Polygon with side length 2, centered at (x*scale, y*scale)
+        cx, cy = x * scale, y * scale
+        square_grid[f"square_{x}_{y}"] = Polygon([
+            (cx - 1, cy - 1),
+            (cx + 1, cy - 1),
+            (cx + 1, cy + 1),
+            (cx - 1, cy + 1)
+        ])
+
+description = "Grid of squares."
+benchList.append(Benchmark(
+    name="Square Grid", 
+    collisionChecker=CollisionChecker(square_grid), 
+    goalList=[[2, 2], [26, 5], [22, 15], [15, 26]], 
+    startList=[[6, 10]], 
+    description=description, 
+    level=2))
+
+# -------------------------------------------
+
+# Grid of squares
+square_grid = dict()
+scale = 4
+side_length = 2
+offset_odd_y = 2
+offset_even_y = 0.0
+for x in range(8):
+    for y in range(8):
+        if y%2 == 0:
+            offset = offset_even_y
+        else:
+            offset = offset_odd_y
+        # Each square is a Polygon with side length side_length, centered at (x*scale, y*scale)
+        cx, cy = x * scale + offset, y * scale
+        square_grid[f"square_{x}_{y}"] = Polygon([
+            (cx - side_length/2, cy - side_length/2),
+            (cx + side_length/2, cy - side_length/2),
+            (cx + side_length/2, cy + side_length/2),
+            (cx - side_length/2, cy + side_length/2)
+        ])
+
+description = "Grid of squares."
+benchList.append(Benchmark(
+    name="Square Grid", 
+    collisionChecker=CollisionChecker(square_grid), 
+    goalList=[[2, 2], [26, 5.5], [22, 15], [15, 26]], 
+    startList=[[6, 10]], 
+    description=description, 
+    level=2))
+
 
 # 2-DoF planar robot
 # -----------------------------------------
@@ -78,8 +156,8 @@ benchList.append(Benchmark("2-DoF planar Robot - 2 Obstacles", environment, [[2.
 obst = dict()
 obst["obs1"] = LineString([(-2, 0), (-0.8, 0)]).buffer(0.5)
 obst["obs2"] = LineString([(2, 0), (2, 1)]).buffer(0.2)
-obst["obs3"] = LineString([(-0.5, -2.0), (-0.5, -2.5)]).buffer(0.1)
-obst["obs4"] = LineString([(0.5, -2.0), (0.5, -2.5)]).buffer(0.1)
+obst["obs3"] = LineString([(-0.5, -2.0), (-0.5, -2.5)]).buffer(0.5)
+obst["obs4"] = LineString([(0.5, -2.0), (0.5, -2.5)]).buffer(0.5)
 r = PlanarRobot(n_joints=2)
 environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
 description = "Planar robot with two joints and 4 obstacles."
