@@ -68,3 +68,50 @@ class CollisionChecker(object):
         for key, value in self.scene.items():
             plotting.plot_polygon(value, add_points=False, ax=ax, color='red')
 
+from IPEnvironmentKin import interpolate_line
+from IPEnvironmentKin import planarRobotVisualize
+import matplotlib.pyplot as plt              
+import matplotlib.animation
+from IPython.display import HTML
+
+matplotlib.rcParams['animation.embed_limit'] = 64
+def animatePointRobotSolution(planner, environment, solution, visualizer, step, workSpaceLimits=[[-3,3],[-3,3]]):
+    _planner = planner
+    _environment = environment
+    _solution = solution
+    _prmVisualizer = visualizer
+    _step = step
+
+    fig_local = plt.figure(figsize=(7, 7))
+    ax1 = fig_local.add_subplot(1, 1, 1)
+    ## get positions for solution
+    solution_pos = [_planner.graph.nodes[node]['pos'] for node in _solution]
+    ## interpolate to obtain a smoother movement
+    i_solution_pos = [solution_pos[0]]
+    for i in range(1, len(solution_pos)):
+        segment_s = solution_pos[i-1]
+        segment_e = solution_pos[i]
+        i_solution_pos = i_solution_pos + interpolate_line(segment_s, segment_e, 0.1)[1:]
+    ## animate
+    frames = len(i_solution_pos)
+        
+    def animate(t):
+        ## clear taks space figure
+        ax1.cla()
+        ## fix figure size
+        ax1.set_xlim(workSpaceLimits[0])
+        ax1.set_ylim(workSpaceLimits[1])
+        ## draw obstacles
+        _environment.drawObstacles(ax1)
+        # Redraw the entire PRM graph and the final solution path.
+        _prmVisualizer(_planner, solution, ax1)
+        # Draw a large red dot on the graph to show the robot's current progress.
+        ax1.scatter(i_solution_pos[t][0], i_solution_pos[t][1], color='r', zorder=10, s=250)
+        
+        
+    ani = matplotlib.animation.FuncAnimation(fig_local, animate, frames=frames)
+    html = HTML(ani.to_jshtml())
+    display(html)
+    plt.close()
+
+
