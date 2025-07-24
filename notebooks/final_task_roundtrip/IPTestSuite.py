@@ -65,15 +65,14 @@ benchList.append(Benchmark("MyField", CollisionChecker(myField), [[4,21]], [[1,1
 
 
 cross = dict()
-offset = 5
-cross["vertical"] = LineString([(15, 5), (15, 25)]).buffer(1)
-cross["horizontal"] = LineString([(5, 15), (25, 15)]).buffer(1)
+cross["vertical"] = LineString([(11, 7), (11, 15)]).buffer(1)
+cross["horizontal"] = LineString([(7, 11), (15, 11)]).buffer(1)
 description = "Simple cross shape with 4 goals."
 benchList.append(Benchmark(
     name="Plus Sign", 
     collisionChecker=CollisionChecker(cross), 
-    goalList=[[10, 20], [20, 20], [20, 10]], 
-    startList=[[10, 10]], 
+    goalList=[[8, 14], [14, 8], [14, 14]], 
+    startList=[[8, 8]], 
     description=description, 
     level=1))
 
@@ -83,8 +82,10 @@ benchList.append(Benchmark(
 square_grid = dict()
 scale = 4
 offset = 0.5
-for x in range(8):
-    for y in range(8):
+for x in range(6):
+    for y in range(6):
+        if y % 2 == 0 and x % 2 == 0:
+            continue # skip even squares
         # Each square is a Polygon with side length 2, centered at (x*scale, y*scale)
         cx, cy = x * scale, y * scale
         square_grid[f"square_{x}_{y}"] = Polygon([
@@ -98,7 +99,7 @@ description = "Grid of squares."
 benchList.append(Benchmark(
     name="Square Grid", 
     collisionChecker=CollisionChecker(square_grid), 
-    goalList=[[2, 2], [26, 5], [22, 15], [15, 26]], 
+    goalList=[[2, 2], [10, 17.7], [14, 14], [18, 2]], 
     startList=[[6, 10]], 
     description=description, 
     level=2))
@@ -111,8 +112,8 @@ scale = 4
 side_length = 2
 offset_odd_y = 2
 offset_even_y = 0.0
-for x in range(8):
-    for y in range(8):
+for x in range(6):
+    for y in range(6):
         if y%2 == 0:
             offset = offset_even_y
         else:
@@ -128,14 +129,14 @@ for x in range(8):
 
 description = "Grid of squares."
 benchList.append(Benchmark(
-    name="Square Grid", 
+    name="harder Square Grid", 
     collisionChecker=CollisionChecker(square_grid), 
-    goalList=[[2, 2], [26, 5.5], [22, 15], [15, 26]], 
+    goalList=[[2, 2], [10, 17.7], [14, 14], [18, 2]], 
     startList=[[6, 10]], 
     description=description, 
     level=2))
 
-
+"""
 # 2-DoF planar robot
 # -----------------------------------------
 obst = dict()
@@ -162,7 +163,7 @@ r = PlanarRobot(n_joints=2)
 environment = KinChainCollisionChecker(r, obst, fk_resolution=.2)
 description = "Planar robot with two joints and 4 obstacles."
 benchList.append(Benchmark("2-DoF planar Robot - 4 Obstacles", environment, [[2.0, 1.5]], [[-2.3,-1.2], [0.8, -0.5], [-0.3, 0.5], [-1.5, 0.0]], description, 2))
-
+"""
 
 # 3-DoF planar robot
 # -----------------------------------------
