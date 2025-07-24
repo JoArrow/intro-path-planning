@@ -83,7 +83,7 @@ import matplotlib.animation
 from IPython.display import HTML
 
 matplotlib.rcParams['animation.embed_limit'] = 64
-def animateSolution(planner, environment, solution, visualizer, step, workSpaceLimits=[[-3,3],[-3,3]]):
+def animateSolution(planner, environment, benchmark, solution, visualizer, step, workSpaceLimits=[[-3,3],[-3,3]]):
     """
     Animates a robot's path found by a planner.
     
@@ -115,6 +115,7 @@ def animateSolution(planner, environment, solution, visualizer, step, workSpaceL
         # ax2 will show the planner's "configuration space" graph.
         ax2 = fig_local.add_subplot(1, 2, 2)
 
+
         # 2. PATH SMOOTHING (INTERPOLATION)
         # The planner's solution is just a few waypoints. To make the animation
         # smooth, we first extract the (x,y) coordinates for each waypoint.
@@ -126,7 +127,7 @@ def animateSolution(planner, environment, solution, visualizer, step, workSpaceL
             segment_s = solution_pos[i-1]
             segment_e = solution_pos[i]
             # The result is a long list of points for a fluid animation.
-            i_solution_pos = i_solution_pos + interpolate_line(segment_s, segment_e, 0.1)[1:]
+            i_solution_pos = i_solution_pos + interpolate_line(segment_s, segment_e, _step)[1:]
 
         # 3. THE ANIMATION LOOP
         # Get the total number of frames from our smoothed path.
@@ -141,6 +142,11 @@ def animateSolution(planner, environment, solution, visualizer, step, workSpaceL
             ax1.cla()  # Clear the previous frame.
             ax1.set_xlim(workSpaceLimits[0]) # Reset the plot boundaries.
             ax1.set_ylim(workSpaceLimits[1])
+
+            title = planner.plannerClass.__name__
+            title += " " + benchmark.name
+            ax1.set_title(title)
+
             _environment.drawObstacles(ax1, inWorkspace = True) # Redraw static obstacles.
             
             # Get the robot's position for the current frame `t`.
@@ -185,7 +191,12 @@ def animateSolution(planner, environment, solution, visualizer, step, workSpaceL
             ax1.cla()
             ax1.set_xlim(workSpaceLimits[0])
             ax1.set_ylim(workSpaceLimits[1])
-            _environment.drawObstacles(ax1, inWorkspace = True)
+
+            title = planner.plannerClass.__name__
+            title += " " + benchmark.name
+            ax1.set_title(title)
+
+            # _environment.drawObstacles(ax1, inWorkspace = True)
             pos = i_solution_pos[t]
             r.move(pos)
             planarRobotVisualize(r, ax1)

@@ -75,7 +75,7 @@ import matplotlib.animation
 from IPython.display import HTML
 
 matplotlib.rcParams['animation.embed_limit'] = 64
-def animatePointRobotSolution(planner, environment, solution, visualizer, step, workSpaceLimits=[[-3,3],[-3,3]]):
+def animatePointRobotSolution(planner, environment, benchmark, solution, visualizer, step, workSpaceLimits=[[-3,3],[-3,3]]):
     _planner = planner
     _environment = environment
     _solution = solution
@@ -91,16 +91,19 @@ def animatePointRobotSolution(planner, environment, solution, visualizer, step, 
     for i in range(1, len(solution_pos)):
         segment_s = solution_pos[i-1]
         segment_e = solution_pos[i]
-        i_solution_pos = i_solution_pos + interpolate_line(segment_s, segment_e, 0.1)[1:]
+        i_solution_pos = i_solution_pos + interpolate_line(segment_s, segment_e, _step)[1:]
     ## animate
     frames = len(i_solution_pos)
         
     def animate(t):
         ## clear taks space figure
         ax1.cla()
+        title = planner.plannerClass.__name__
+        title += " " + benchmark.name
+        ax1.set_title(title)
         ## fix figure size
-        ax1.set_xlim(workSpaceLimits[0])
-        ax1.set_ylim(workSpaceLimits[1])
+        # ax1.set_xlim(workSpaceLimits[0])
+        # ax1.set_ylim(workSpaceLimits[1])
         ## draw obstacles
         _environment.drawObstacles(ax1)
         # Redraw the entire PRM graph and the final solution path.
